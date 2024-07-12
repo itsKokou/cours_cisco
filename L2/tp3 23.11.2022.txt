@@ -1,0 +1,59 @@
+enable 
+conf t
+enable secret cisco
+line vty 0 15
+password class
+login
+line console 0
+password cisco
+login
+banner motd @ L2 ISM @
+hostname R1
+
+==**R1**==
+
+interface G0/0
+ip address 192.168.11.1 255.255.255.0
+no shutdown 
+interface G0/1
+ip address 192.168.10.1 255.255.255.0
+no shutdown
+interface G0/2
+ip address 209.165.200.1 255.255.255.252
+no shutdown 
+
+==**R2**==
+
+interface G0/0
+ip address 172.16.11.1 255.255.255.0
+no shutdown 
+interface G0/1
+ip address 172.16.10.1 255.255.255.0
+no shutdown
+interface G0/2
+ip address 209.165.200.2 255.255.255.252
+no shutdown 
+
+==**SWA1**==
+interface VLAN 1
+ip address 192.168.10.2 255.255.255.0
+no shutdown 
+ip default-gateway 192.168.10.1
+
+==**SWA2**==
+INTERFACE VLAN 1
+IP ADDRESS 192.168.11.2 255.255.255.0
+NO SHUTDOWN
+IP DEFAULT-GATEWAY 192.168.11.1
+
+==**SWA3**==
+interface vlan 1
+ip address 172.16.10.2 255.255.255.0
+no shutdown
+ip default-gateway 172.16.10.1
+
+==**SWA4**==
+interface vlan 1
+ip address 172.16.11.2 255.255.255.0
+no shutdown 
+ip default-gateway 172.16.11.1 

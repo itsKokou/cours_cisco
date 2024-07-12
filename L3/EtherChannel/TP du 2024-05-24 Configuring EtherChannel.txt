@@ -1,0 +1,127 @@
+=======CONFIGURATION DE BASE==========
+enable
+conf t
+enable secret class
+line vty 0 15
+password cisco
+login
+line console 0
+logging synchronous
+password cisco
+login
+banner motd # 'Bienvenue' #
+no ip domain-lookup
+
+
+================== S2 ======================
+hostname S2
+no ip domain-lookup
+VLAN 99
+name Management
+exit
+interface vlan 99
+ip add 192.168.99.12 255.255.255.0
+exit
+
+--------------- Configuration de LACP S1 et S2 ----------
+interface range f0/1-2
+switchport mode trunk
+switchport trunk native vlan 99
+channel-group 2 mode passive
+no shutdown
+exit
+
+--------------- Vérifiez que les ports ont été agrégés ---------
+show etherchannel summary
+
+--------------- Configuration de LACP S2 et S3 ----------
+interface range f0/3-4
+switchport mode trunk
+switchport trunk native vlan 99
+channel-group 3 mode active
+no shutdown
+exit
+
+
+================== S1 ======================
+hostname S1
+no ip domain-lookup
+VLAN 99
+name Management
+exit
+interface vlan 99
+ip add 192.168.99.11 255.255.255.0
+exit
+
+-------------- Configurez PAgP sur S1 et S3 ----------
+interface range f0/3-4
+channel-group 1 mode desirable
+no shutdown
+exit
+
+-------------- Examinez la configuration des ports -------
+show run interface f0/3 
+       ou
+show run 
+show interfaces f0/3 switchport
+
+--------------- Vérifiez que les ports ont été agrégés ---------
+show etherchannel summary
+
+---------------- Configurez les ports trunk ---------------
+interface port-channel 1
+switchport mode trunk
+switchport trunk native vlan 99
+exit
+
+------------- check ports sont configurés en tant que ports trunk -----
+show run
+show interfaces trunk
+show spanning-tree
+
+--------------- Configuration de LACP S1 et S2 ----------
+interface range f0/1-2
+switchport mode trunk
+switchport trunk native vlan 99
+channel-group 2 mode active
+no shutdown 
+exit
+
+--------------- Vérifiez que les ports ont été agrégés ---------
+show etherchannel summary
+
+
+
+
+================== S3 ======================
+hostname S3
+no ip domain-lookup
+VLAN 99
+name Management
+exit
+interface vlan 99
+ip add 192.168.99.13 255.255.255.0
+exit
+
+-------------- Configurez PAgP sur S1 et S3 ----------
+interface range f0/3-4
+channel-group 1 mode auto
+no shutdown
+exit
+
+---------------- Configurez les ports trunk ---------------
+interface port-channel 1
+switchport mode trunk
+switchport trunk native vlan 99
+exit
+
+--------------- Configuration de LACP S2 et S3 ----------
+interface range f0/1-2
+switchport mode trunk
+switchport trunk native vlan 99
+channel-group 3 mode passive
+no shutdown
+exit
+
+
+

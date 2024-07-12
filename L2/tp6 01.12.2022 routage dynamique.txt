@@ -1,0 +1,189 @@
+==CONFIGURATION DE BASE==
+
+enable 
+conf t
+enable secret cisco
+line vty 0 15
+password class
+login
+line console 0
+password cisco
+no login 
+banner motd @ CLASSE L2 GLRS @
+hostname SW
+
+==ADRESSAGE DES ELEMENTS==
+
+    **Configuration sur le site HQ**
+
+==** HQ**==
+INTERFACE G0/1
+IP ADDRESS 192.168.3.2 255.255.255.252
+NO SHU
+INTER G0/2
+IP ADDRESS 192.168.3.6 255.255.255.252
+NO SHUTDOWN
+INTERFACE S0/0/0
+IP ADDRESS 209.165.200.1 255.255.255.252
+NO SHUT
+INTERFACE S0/0/1
+IP ADDRESS 209.165.200.5 255.255.255.252
+NO SHUT 
+
+
+==** R1**==
+INTERFACE G0/0
+IP ADDRESS 192.168.1.1 255.255.255.0
+NO SHUTDOWN
+INTERFACE G0/1
+IP ADDRESS 192.168.3.1 255.255.255.252
+NO SHU
+INTER G0/2
+IP ADDRESS 192.168.3.9 255.255.255.252
+NO SHUTDOWN
+
+
+==** R2**==
+INTERFACE G0/0
+IP ADDRESS 192.168.2.1 255.255.255.0
+NO SHUTDOWN
+INTER G0/1
+IP ADDRESS 192.168.3.5 255.255.255.252
+NO SHUTDOWN
+INTERFACE G0/2
+IP ADDRESS 192.168.3.10 255.255.255.252
+NO SHU
+
+
+==** SW1**==
+interface vlan 1 
+IP ADDRESS 192.168.1.2 255.255.255.0
+no shut 
+ip default-gateway 192.168.1.1
+
+
+==** SW2**==
+interface vlan 1
+ip address 192.168.2.2 255.255.255.0
+no shut 
+ip default-gateway 192.168.2.1
+
+
+**Configuration sur le site BRANCH**
+
+==**BRANCH**==
+INTER G0/1
+IP ADDRESS 172.16.3.2 255.255.255.252
+NO SHU
+INTER G0/2
+IP ADDRESS 172.16.3.6 255.255.255.252
+NO SHU
+INTER S0/0/0
+IP ADDRESS 209.165.200.2 255.255.255.252
+NO SHU
+INTER S0/0/1
+IP ADD 209.165.200.6 255.255.255.252
+NO SHUT
+ 
+
+==** R3**==
+INTER G0/0
+IP ADDRESS 172.16.1.1 255.255.255.0
+NO SHUT
+INTER G0/1
+IP ADDRESS 172.16.3.1 255.255.255.252
+NO SHU
+INTER G0/2
+IP ADDRESS 172.16.3.9 255.255.255.252
+NO SHU
+
+
+==** R4**==
+INTER G0/0
+IP ADDRESS 172.16.2.1 255.255.255.0
+NO SHU
+INTER G0/1
+IP ADDRESS 172.16.3.5 255.255.255.252
+NO SHU
+INTER G0/2
+IP ADDRESS 172.16.3.10 255.255.255.252
+NO SHU
+
+
+==** SW3**==
+interface vlan 1
+ip address 172.16.1.2 255.255.255.0
+no shut 
+ip default-gateway 172.16.1.1
+
+
+==** SW4**==
+interface vlan 1 
+ip address 172.16.2.2 255.255.255.0
+no shut 
+ip default-gateway 172.16.2.1
+
+
+
+
+==CNFIGURATION DES ROUTES DYNAMIQUES==
+
+    **Configuration sur le site HQ**
+
+
+==** HQ**==
+Router rip 
+Version 2
+No auto-summary
+NETWORK 192.168.3.0
+NETWORK 192.168.3.4
+NETWORK 209.165.200.0
+NETWORK 209.165.200.4
+
+
+==** R1**==
+Router rip 
+Version 2
+No auto-summary
+NETWORK 192.168.3.0
+NETWORK 192.168.3.8
+NETWORK 192.168.1.0
+
+
+==** R2**==
+Router rip 
+Version 2
+No auto-summary
+NETWORK 192.168.3.8
+NETWORK 192.168.3.4
+NETWORK 192.168.2.0
+
+
+**Configuration sur le site BRANCH**
+
+==**BRANCH**==
+Router rip 
+Version 2
+No auto-summary
+NETWORK 172.16.3.0
+NETWORK 172.16.3.4
+NETWORK 209.165.200.0
+NETWORK 209.165.200.4
+
+
+==** R3**==
+Router rip 
+Version 2
+No auto-summary
+NETWORK 172.16.1.0
+NETWORK 172.16.3.0
+NETWORK 172.16.3.8
+
+
+==** R4**==
+Router rip 
+Version 2
+No auto-summary
+NETWORK 172.16.2.0
+NETWORK 172.16.3.4
+NETWORK 172.16.3.8

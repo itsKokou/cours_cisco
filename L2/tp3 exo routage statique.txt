@@ -1,0 +1,86 @@
+==**Configuration de base**==
+
+enable
+conf t
+enable secret cisco
+line vty 0 15
+password class
+login 
+line console 0
+password cisco
+login
+banner motd @ L2GLRSB ISM @
+hostname R1
+
+==**R1**==
+
+interface G0/0
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+interface G0/1
+ip address 209.165.200.1 255.255.255.252
+no shutdown
+interface G0/2
+ip address 209.165.200.9 255.255.255.252
+no shutdown
+
+==**R2**==
+
+interface G0/0
+ip address 10.0.1.1 255.255.255.0
+no shutdown
+interface G0/1
+ip address 209.165.200.2 255.255.255.252
+no shutdown
+interface G0/2
+ip address 209.165.200.6 255.255.255.252
+no shutdown
+
+==**R3**==
+
+interface G0/0
+ip address 172.16.1.1 255.255.255.0
+no shutdown
+interface G0/1
+ip address 209.165.200.5 255.255.255.252
+no shutdown
+interface G0/2
+ip address 209.165.200.10 255.255.255.252
+no shutdown
+
+==**SW1**==
+
+interface vlan 1
+ip address 192.168.1.2 255.255.255.0
+no shutdown
+ip default-gateway 192.168.1.1
+
+==**SW2**==
+
+interface vlan 1
+ip address 10.0.1.2 255.255.255.0
+no shutdown
+ip default-gateway 10.0.1.1
+
+==**SW3**==
+
+interface vlan 1
+ip address 172.16.1.2 255.255.255.0
+no shutdown
+ip default-gateway 172.16.1.1
+
+==**Routage R1**==
+ip route 10.0.1.0 255.255.255.0 209.165.200.2
+ip route 172.16.1.0 255.255.255.0 209.165.200.10
+
+==**Routage R2**==
+ip route 192.168.1.0 255.255.255.0 209.165.200.1
+ip route 172.16.1.0 255.255.255.0 209.165.200.5
+
+==**Routage R3**==
+ip route 192.168.1.0 255.255.255.0 209.165.200.9
+ip route 10.0.1.0 255.255.255.0 209.165.200.6
+
+
+do show ip interface briel (mode configuration)
+show ip interface brief (mode enable)

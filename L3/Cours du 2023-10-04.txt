@@ -1,0 +1,102 @@
+*******   Cours du 04-10-2023 ********
+
+1- Comparer les modèles OSI et TCP/IP
+2- Donner le rôle de chaque dispositif d'interconnexion et son niveau de fonctionnement OSI( répéteur, hub, port, switch, routeur, Passerelle)
+3- Donner et expliquer les bornes de chaque classe d'@Ip V4
+
+__________________________________________
+
+1- Comparaison entre OSI et TCP/IP 
+
+# Le modèle OSI (International Standardisation organization) est de loin le plus complet. Il décrit sept couches portant les noms de couche physique, liaison, réseau, transport, session, présentation et application(Par Le Reseau Tout Se Passe Automatiquement). Les divers protocoles qui définissent le réseau et les communications sont donc répartis dans chaque couche, selon leur utilité. Il est d'usage de diviser ces sept couches en deux : les couches basses, qui se limitent à gérer des fonctionnalités de base, et les couches hautes, qui contiennent les protocoles plus élaborés.
+
+- Des Sottises Pour Te Berner : -Donnée -Donnée -Donnée -Segment -Paquet -Trame -Bit
+
+# Le modèle TCP/IP est plus simple qu'OSI, avec seulement quatre couches : liaison, Internet, transport et application. La différence avec OSI est simplement que certaines couches ont été fusionnées. La couche liaison de TCP/IP regroupe notamment les couches physiques et liaison d'OSI. De même, la couche application de TCP/IP regroupe les couches session, application et présentation d'OSI.
+
+2- Rôle des dispositifs d'interconnexion: 
+
+# Un répéteur est un équipement simple permettant de regénérer un signal entre deux noeuds du réseau, afin d'étendre la distance de câblage d'un réseau pour éviter les distorsions et un affaiblissement du signal lorsque la distance qui sépare deux éléments actifs est longue.Il fonctionne comme une seconde box, et va ainsi reproduire le signal wifi à l'identique. Un répéteur wifi permet de conserver le même nom de réseau wifi que celui de votre box. Pensez à placer votre répéteur wifi dans une zone bien couverte par votre routeur
+
+  Le répéteur travaille uniquement au niveau physique (couche 1 du modèle OSI), c'est-à-dire qu'il ne travaille qu'au niveau des informations binaires circulant sur la ligne de transmission et qu'il n'est pas capable d'interpréter les paquets d'informations
+
+# Un hub est un périphérique réseau reliant différents nœuds de réseau en étoile, au sein d'un réseau Ethernet par exemple. Il est souvent utilisé pour connecter des segments d'un réseau local (LAN). Un hub contient plusieurs ports. Lorsqu'un paquet est reçu sur un port, celui-ci est envoyé aux autres ports afin que tous les segments du réseau local puissent accéder à tous les paquets.
+
+  D'après le modèle de référence OSI (Open Systems Interconnections), les hubs sont des appareils de niveau 1, c'est-à-dire des périphériques fonctionnant sur la couche de transmission des bits
+
+# Port :  est un point virtuel où les connexions réseau commencent et se terminent. Chaque port est associé à un processus ou à un service spécifique. Les ports permettent aux ordinateurs de différencier facilement les différents types de trafic 
+ 
+ les ports sont gérés par la couche dite de transport
+
+# En informatique, un switch est un boîtier doté de quatre à plusieurs centaines de ports Ethernet, et qui sert à relier en réseau différents éléments du système informatique. Est un équipement qui fonctionne comme une multiprise ou si on reste sur le volet informatique un pont multiport… qui permet de relier plusieurs segments d’un réseau informatique entre eux.
+
+ Ils sont regroupés dans les couche 2 et 3 du modèle OSI
+
+# le routeur est un équipement d'interconnexion qui permet l'échange d'informations entre des matériels appartenant à des réseaux logiques différents (matériel émetteur et matériel récepteur qui appartiennent à un adressage IP de réseaux distincts). Routage, filtrage & segmentation
+
+# Une passerelle, ou gateway, est un dispositif matériel de réseau ou un nœud de réseau conçu pour connecter deux réseaux différents, permettant aux utilisateurs de communiquer à travers plusieurs réseaux.
+
+________________________________________________________________________
+MB = Mega Byte soit Méga Octect
+
+1 octect = 8 bits
+1 quartet = 4 bits 
+1 hextet = 16 bits
+
+adresse logique = IP
+adresse physique / matérielle = add Mac => 48 bits
+
+Youtube : Bailas, Ayounix,
+_________________________________________________________________________
+
+Recherche :
+
+   - Système autonome (AS en anglais) : un très grand réseau ou groupe de réseaux ayant une politique de routage interne (routes à choisir en priorité, filtrage des annonces) cohérente.
+
+   - EGP (Exterior Gateway Protocol) : protocole permettant le routage entre différents systèmes autonomes de routage
+
+   - IGP (Interior gateway protocol) : protocole permettant le routage au sein  d'un système autonome de routage
+
+_______________________________________________________________________________________
+
+Recherhce 2:
+
+- Routage :  le processus de sélection du chemin dans un réseau; faire passer des paquets d'un réseau A à B
+
+- Protocole de routage : est un ensemble de règles qui spécifient la manière dont les routeurs identifient et transmettent les paquets le long d'un chemin         
+                         réseau.
+
+- Protocole routable : permet de transmettre des données entre deux réseaux différents en utilisant un routeur matériel ou logiciel. Ce dernier doit 
+                       évidemment gérer ce protocole. Les protocoles routables couramment employés sont IP (Internet Protocol) et IPX (Internet Packet 
+                       Exchange).
+
+- Protocle routé : est un protocole de réseau dont l'adresse de couche réseau fournit suffisamment d'informations pour permettre d'acheminer un paquet d'une 
+                   machine vers une autre sur la base du modèle d'adressage. Les protocoles routés définissent le format des champs d'un paquet, le format 
+                   des adresses.
+
+- Table de routage: un ensemble de règles, représentées sous forme de tableau, qui permet de déterminer où seront acheminés les paquets de données circulant 
+                    sur un réseau IP. Tous les dispositifs IP, y compris les routeurs et les commutateurs, utilisent des tables de routage.
+
+- Paquet : est un bloc de données formaté envoyé sur un réseau. Les principaux composants d'un paquet réseau sont les données utilisateur et les      
+           informations de contrôle. Les données utilisateur sont appelées payload ou charge utile. Information au niveau 3
+
+- Route : Chemin emprunté par le paquet
+
+- Métrique : est une mesure quantifiable utilisée par les responsables informatiques pour faciliter la gestion de l'activité informatique. Ils aident les 
+             DSI ou les responsables informatiques à comprendre la valeur de la technologie et à démontrer la valeur de l'informatique au reste de 
+             l'entreprise. critère de selection de la route emprunté par les paquet
+
+- Distance administrative : est le premier critère qu'utilise un routeur pour déterminer quel protocole de routage à utiliser si deux protocoles fournissent  
+                            des informations de routage pour la même destination. La distance administrative mesure la fiabilité de la source des 
+                            informations de routage.
+
+
+________________________________________________________________________________________
+
+télécharger : -ENSP -Packet Tracert -GNS3
+faire le réseau sur les 3 
+
+
+
+
+

@@ -1,0 +1,31 @@
+===Preemption
+La préemption Cisco fait référence à la capacité d'un routeur ou d'un commutateur Cisco à prendre le contrôle du trafic réseau en cas de défaillance d'un périphérique principal. Cela permet d'assurer la continuité du service en cas de panne d'un équipement actif.
+
+===Round Robin
+nous pouvons parler de transfert circulaire, c'est-à-dire lorsque plusieurs chemins existent pour atteindre une destination et que l'équilibrage de charge par paquet est utilisé.
+
+Ainsi, le routage round robin peut être considéré comme une commutation de processus de paquets.
+
+En un mot, l'équilibrage de charge réseau à tour de rôle fait tourner les demandes de connexion entre les serveurs Web dans l'ordre de leur réception.
+
+===FHRP
+HSRP, First Host Router Protocol est un protocole de redondance du premier saut. De multiples passerelles de réseau local s’entendent sur une adresse IP virtuelle et élisent un routeur “Active” qui prend en charge le trafic comme passerelle par défaut en répondant au trafic ARP. Un autre routeur reste en état “Standby” alors que tous les autres sont en état “Listen”.
+
+===VRRP (standard) : passif : un seul routeur marche
+VRRP est donc, à l’instar de HSRP, également un protocole qui fourni une solution de continuité de service principalement pour la redondance de passerelles par défaut.
+VRRP (Virtual Router Redundancy Protocol) est un protocole de réseau utilisé pour assurer la disponibilité d'une passerelle par défaut en cas de défaillance du routeur principal. Cisco propose une implémentation de VRRP dans ses équipements réseau pour assurer une redondance et une haute disponibilité.
+
+===HSRP(Cisco) : actif
+HSRP (Host Standby Routing Protocol) est utilisé pour assurer une disponibilité accrue de la passerelle d'un réseau. L'adresse IP de la passerelle est configurée sur deux routeurs différents. Une seule de ces deux interfaces est active. Si l'interface active n'est plus accessible, l'interface passive devient active.
+
+===GLBP(Cisco) : tout routeur marche
+Le protocole GLBP (Gateway Load Balancing Protocol) protège le trafic de données d'un routeur ou d'un circuit défaillant, comme le protocole HSRP (Hot Standby Router Protocol) et le protocole VRRP (Virtual Router Redundancy Protocol), tout en permettant le partage de la charge des paquets entre un groupe de routeurs redondants.
+
+===Single Homed
+Single homed Cisco se réfère à une configuration réseau dans laquelle un périphérique Cisco est connecté à un seul réseau, sans avoir de connexion de secours ou de redondance vers un autre réseau. Cette configuration peut être utilisée pour des déploiements simples ou des réseaux de petite taille où la redondance n'est pas nécessaire.
+L'avantage d'une liaison à hébergement unique est qu'elle est rentable, l'inconvénient est que vous n'avez aucune redondance. 
+
+===Dual Homed
+La connexion à double hébergement ajoute une certaine redondance. Vous n'êtes toujours connecté qu'à un seul FAI, mais vous utilisez deux liens au lieu d'un. Il existe quelques variantes pour cette conception. 
+
+===Multi Homed

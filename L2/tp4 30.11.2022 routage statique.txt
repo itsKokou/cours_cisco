@@ -1,0 +1,120 @@
+==**Global**==
+enable
+conf t
+enable secret cisco
+line console 0
+password cisco 
+login 
+line vty 0 15
+password class
+login 
+banner motd @ CLASS L2 GLRSB @
+hostname R1
+
+==**R1**==
+interface G0/0
+ip add 192.168.1.1 255.255.255.0
+No shutdown 
+interface G0/1
+ip add 209.165.200.1 255.255.255.252
+no shutdown
+interface G0/2
+ip add 209.165.200.5 255.255.255.252
+no shutdown
+interface S0/0/0
+ip add 209.165.200.17 255.255.255.252
+No shut 
+clock rate 64000
+
+==**R2**==
+interface G0/0
+ip add 192.168.2.1 255.255.255.0
+No shutdown 
+interface G0/1
+ip add 209.165.200.2 255.255.255.252
+No shut 
+interface G0/2
+ip add 209.165.200.13 255.255.255.252
+No shut 
+
+==**R3**==
+interface G0/0
+ip add 192.168.3.1 255.255.255.0
+No shutdown 
+interface G0/1
+ip add 209.165.200.6 255.255.255.252
+No shut 
+interface G0/2
+ip add 209.165.200.9 255.255.255.252
+No shut 
+
+==**R4**==
+interface G0/0
+ip add 192.168.4.1 255.255.255.0
+No shutdown 
+interface G0/1
+ip add 209.165.200.14 255.255.255.252
+no shutdown
+interface G0/2
+ip add 209.165.200.10 255.255.255.252
+no shutdown
+interface S0/0/0
+ip add 209.165.200.18 255.255.255.252
+No shut 
+clock rate 64000
+
+==**SW1**==
+interface vlan 1
+ip address 192.168.1.2 255.255.255.0
+No shutdown 
+ip default-gateway 192.168.1.1
+
+==**SW2**==
+interface vlan 1
+ip address 192.168.2.2 255.255.255.0
+No shutdown 
+ip default-gateway 192.168.2.1
+
+==**SW3**==
+interface vlan 1
+ip address 192.168.3.2 255.255.255.0
+No shutdown 
+ip default-gateway 192.168.3.1
+
+==**SW4**==
+interface vlan 1
+ip address 192.168.4.2 255.255.255.0
+No shutdown 
+ip default-gateway 192.168.4.1
+
+
+==**Routage R1**==
+ip route 192.168.2.0 255.255.255.0 209.165.200.2
+ip route 192.168.3.0 255.255.255.0 209.165.200.6
+ip route 192.168.4.0 255.255.255.0 209.165.200.18
+ip route 209.165.200.8 255.255.255.252 209.165.200.6
+ip route 209.165.200.12 255.255.255.252 209.165.200.2
+
+==**Routage R2**==
+ip route 192.168.1.0 255.255.255.0 209.165.200.1
+ip route 192.168.3.0 255.255.255.0 209.165.200.1
+ip route 192.168.4.0 255.255.255.0 209.165.200.14
+ip route 209.165.200.4 255.255.255.252 209.165.200.1
+ip route 209.165.200.8 255.255.255.252 209.165.200.14
+ip route 209.165.200.16 255.255.255.252 209.165.200.6
+
+==**Routage R3**==
+ip route 192.168.1.0 255.255.255.0 209.165.200.5
+ip route 192.168.4.0 255.255.255.0 209.165.200.10
+ip route 192.168.2.0 255.255.255.0 209.165.200.5
+ip route 209.165.200.16 255.255.255.252 209.165.200.5
+ip route 209.165.200.0 255.255.255.252 209.165.200.5
+ip route 209.165.200.12 255.255.255.252 209.165.200.10
+
+==**Routage R4**==
+ip route 192.168.1.0 255.255.255.0 209.165.200.17
+ip route 192.168.3.0 255.255.255.0 209.165.200.9
+ip route 192.168.2.0 255.255.255.0 209.165.200.13
+ip route 209.165.200.0 255.255.255.252 209.165.200.13
+ip route 209.165.200.4 255.255.255.252 209.165.200.9
+

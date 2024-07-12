@@ -1,0 +1,72 @@
+======= R1 ========
+
+**** Conf ****
+
+system-view 
+sysname R1
+interface GigabitEthernet 0/0/0
+ip address 10.0.13.1 24
+quit
+interface GigabitEthernet 0/0/1
+ip address 10.0.12.1 24
+quit
+interface LoopBack 0
+ip address 10.0.1.1 24
+quit
+
+**** Static Routes ****
+ip route-static 10.0.3.0 24 10.0.13.3
+ip route-static 0.0.0.0 0.0.0.0 10.0.13.3
+
+**** Backup Static Routes ****
+ip route-static 0.0.0.0 0.0.0.0 10.0.12.2 preference 80
+
+
+======= R2 ========
+
+***** Conf ****
+
+system-view 
+sysname R2
+interface GigabitEthernet 0/0/1
+ip address 10.0.12.2 24 
+quit 
+interface GigabitEthernet0/0/2
+ip add 10.0.23.2 24 
+quit
+interface LoopBack0
+ip address 10.0.2.2 24
+quit
+
+**** Static Routes ****
+ip route-static 10.0.13.0 24 10.0.23.3
+ip route-static 10.0.3.0 24 10.0.23.3
+
+**** Backup static routes *****
+ip route-static 10.0.13.0 255.255.255.0 10.0.12.1 preference 80
+ip route-static 10.0.3.0 24 10.0.12.1 preference 80
+
+
+======= R3 ========
+
+***** Conf ****
+
+system-view
+sysname R3 
+interface GigabitEthernet 0/0/0
+ip address 10.0.13.3 24
+quit
+interface GigabitEthernet0/0/2
+ip address 10.0.23.3 24
+quit
+interface LoopBack 0
+ip address 10.0.3.3 24
+quit
+
+**** Static Routes ****
+ip route-static 10.0.12.0 24 10.0.13.1
+
+
+**** Backup Static Routes ****
+ip route-static 10.0.12.0 24 10.0.23.2 preference 80
+

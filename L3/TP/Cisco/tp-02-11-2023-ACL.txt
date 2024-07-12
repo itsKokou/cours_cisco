@@ -1,0 +1,124 @@
+============= R2 ==============
+en 
+conf t
+hostname R2
+no ip domain-lookup
+int G0/1
+ip add 192.168.20.1 255.255.255.0
+no shut 
+int S0/0/0
+ip add 10.1.1.2 255.255.255.252
+no shut
+int S0/0/1
+ip add 10.2.2.1 255.255.255.252
+no shut
+int lo0
+ip add 209.165.200.225 255.255.255.224
+no shut
+
+router ospf 1
+network 192.168.20.0 0.0.0.255 area 0
+network 10.1.1.0 0.0.0.3 area 0
+network 10.2.2.0 0.0.0.3 area 0
+network 209.165.200.224 0.0.0.31 area 0
+
+-----List d'accès standard line vty 0 4--------
+ip access-list standard TASK-5
+permit 10.2.2.0 0.0.0.3
+permit 192.168.30.0 0.0.0.255
+
+line vty 0 4
+access-class TASK-5 in
+end
+copy run start
+
+============= R1 ==============
+en 
+conf t
+hostname R1
+no ip domain-lookup
+int S0/0/0
+ip add 10.1.1.1 255.255.255.252
+no shut
+int G0/0
+ip add 192.168.10.1 255.255.255.0
+no shut
+int G0/1
+ip add 192.168.11.1 255.255.255.0
+no shut
+
+router ospf 1
+network 192.168.10.0 0.0.0.255 area 0
+network 192.168.11.0 0.0.0.255 area 0
+network 10.1.1.0 0.0.0.3 area 0
+
+-----List d'accès étendue--------
+ip access-list extended EXTEND-1
+deny ip 192.168.10.0 0.0.0.255 host 209.165.200.225
+permit ip any any
+
+interface serial 0/0/0
+ip access-group EXTEND-1 out
+end 
+copy run start
+
+============= R3 ==============
+en 
+conf t
+hostname R3
+no ip domain-lookup
+int S0/0/1
+ip add 10.2.2.2 255.255.255.252
+no shut
+int G0/1
+ip add 192.168.30.1 255.255.255.0
+no shut
+
+router ospf 1
+network 192.168.30.0 0.0.0.255 area 0
+network 10.2.2.0 0.0.0.3 area 0
+
+-----List d'accès standard--------
+
+ip access-list standard STND-1
+10 deny 192.168.11.0 0.0.0.255 
+20 permit any
+
+interface serial 0/0/1
+ip access-group STND-1 in
+end 
+copy run start
+
+============= Comm1 ==============
+en 
+conf t
+hostname Comm1
+no ip domain-lookup
+int vlan 1
+no shut 
+ip add 192.168.10.2 255.255.255.0
+ip default-gateway 192.168.10.1
+
+
+============= Comm2 ==============
+en 
+conf t
+hostname Comm2
+no ip domain-lookup
+int vlan 1
+no shut 
+ip add 192.168.11.2 255.255.255.0
+ip default-gateway 192.168.11.1
+
+============= Comm3 ==============
+en 
+conf t
+hostname Comm3
+no ip domain-lookup
+int vlan 1
+no shut 
+ip add 192.168.30.2 255.255.255.0
+ip default-gateway 192.168.30.1
+
+
+

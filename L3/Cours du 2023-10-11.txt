@@ -1,0 +1,41 @@
+#sh ip route ==> Voir la table de routage
+
+#sh ip protocols ==> voir le protocol de routage 
+
+[120/1] : distance administrative de 120 et une métrique de 1
+
+
+Configuration de la table d'hôte : permet de ping à partir des noms d'hôte.
+#ip host nom_hote address 
+
+___________________________________________________________________
+
+Notion de Masque générique (pour config OSPF & EIGRP):
+
+Pour le calculer on fait la difference entre le masque de broadcast et le masque de sous-réseau : 
+ex : 192.168.0.0/30 ==> 255.255.255.255 - 255.255.255.252 = 0.0.0.3
+
+
+___________________________________________________________________
+**********    ENSP : HUAWEI           ************
+
+hostname = sysname
+show == display 
+exit == quit 
+no == undo
+
+system-view == passer en mode privilégié, qui permet ici la configuration 
+
+save == write memory == copy run start
+
+display ip routing-table == sh ip route
+
+[L3]ip route-static @reseau_distant @mask @1er_saut
+
+]rip
+]version 2
+]network .......
+
+]ospf 1
+]area 0
+]network ....... 

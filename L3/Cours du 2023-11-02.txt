@@ -1,0 +1,14 @@
+ACL 
+
+Une Liste de Contrôle d'Acces est un ensemble d'instructions appelées ACE (Access Control Entry) placées au niveau d'une interface de routeur pour bloquer ou autoriser une action.
+
+L'ordre a un sens
+
+Une ACL se termine de manière implicite par un refus 
+
+On part du particulier vers le général 
+
+------
+* Si 1ere instruction vérifiée, on vérifie pas les autres 
+
+* Si 1ere fausse, on vérifie la deuxième 

@@ -1,0 +1,151 @@
+=== CONFIGURATIONDES ADRESSES
+
+=== ROUTER 
+
+hostname HQ
+int G0/0
+ip add 192.168.6.1 255.255.255.0
+no shut 
+int G0/1
+ip add 192.168.4.2 255.255.255.0
+no shut 
+int G0/2
+ip add 192.168.5.2 255.255.255.0
+no shut 
+
+== FEDE1 
+
+host FEDE1
+vlan 2
+vlan 3
+int vlan 2
+ip add 192.168.2.1 255.255.255.0
+
+interface vlan 3
+ip add 192.168.3.1 255.255.255.0
+
+interface G0/1
+no switchport
+ip add 192.168.4.1 255.255.255.0
+no shut 
+
+interface f0/1
+switchport mode trunk
+
+== FEDE2
+
+host FEDE2
+vlan 2
+vlan 3
+int vlan 2
+ip add 192.168.2.2 255.255.255.0
+
+interface vlan 3
+ip add 192.168.3.2 255.255.255.0
+
+interface G0/1
+no switchport
+ip add 192.168.5.1 255.255.255.0
+no shut 
+
+interface f0/1
+switchport mode trunk
+
+== SWA
+
+host SWA
+interface r f0/1-2
+switchport mode trunk
+interface f0/3
+switchport mode access 
+switchport access vlan 2
+interface f0/4
+switchport mode access 
+switchport access vlan 3
+
+
+=== ROUTAGE 
+		//DYNAMIQUE 
+
+== HQ 
+
+router rip 
+version 2
+no auto-summary
+network 192.168.6.0
+network 192.168.4.0
+network 192.168.5.0
+
+== FEDE1
+
+ip routing 
+router rip 
+version 2
+no auto-summary
+network 192.168.4.0
+network 192.168.2.0
+network 192.168.3.0
+
+
+== FEDE2
+
+ip routing 
+router rip 
+version 2
+no auto-summary
+network 192.168.5.0
+network 192.168.2.0
+network 192.168.3.0
+ 
+     // OU STATIQUE
+
+== HQ 
+
+ip route 192.168.2.0 255.255.255.0 192.168.4.1
+ip route 192.168.3.0 255.255.255.0 192.168.4.1
+ip route 192.168.2.0 255.255.255.0 192.168.5.1
+ip route 192.168.3.0 255.255.255.0 192.168.5.1
+
+== FEDE1 
+
+ip route 192.168.6.0 255.255.255.0 g0/1
+ip route 192.168.5.0 255.255.255.0 g0/1
+
+== FEDE2
+
+ip route 192.168.6.0 255.255.255.0 g0/2
+ip route 192.168.4.0 255.255.255.0 g0/2
+
+
+=== PACERELLES VIRTUELLES / SYSTEME REDONDANT
+
+== FEDE1
+
+int vlan 2
+standby 2 ip 192.168.2.3
+standby 2 priority 150
+standby 2 preempt
+
+int vlan 3
+standby 3 ip 192.168.3.3
+
+== FEDE2
+
+int vlan 2
+standby 2 ip 192.168.2.3
+
+
+int vlan 3
+standby 3 ip 192.168.3.3
+standby 3 priority 150
+standby 3 preempt
+
+
+
+
+
+
+
+
+
+

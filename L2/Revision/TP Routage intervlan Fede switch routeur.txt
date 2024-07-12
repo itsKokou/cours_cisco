@@ -1,0 +1,255 @@
+==== CONFIGURATION DES ADRESSES
+
+== BRANCH 
+
+en
+conf t
+hostname BRANCH
+interface g0/0
+ip add 200.1.1.1 255.255.255.252
+no shutdown 
+interface g0/1
+ip add 172.16.2.1 255.255.255.0
+no shutdown 
+interface g0/2
+ip add 172.16.1.1 255.255.255.0
+no shutdown
+
+== INTERNET 
+
+en 
+conf t
+host INTERNET
+interface g0/0
+ip add 200.1.1.2 255.255.255.252
+no shutdown 
+interface s0/0/0
+ip add 199.1.1.2 255.255.255.248
+no shut 
+
+
+== CORE 
+
+en 
+conf t
+host CORE 
+interface s0/0/0
+ip add 199.1.1.1 255.255.255.248
+no shut 
+interface g0/0
+ip add 192.168.8.1 255.255.255.0
+no shut 
+interface g0/1
+ip add 192.168.6.2 255.255.255.0
+no shut 
+interface g0/2
+ip add 192.168.7.2 255.255.255.0
+no shut 
+
+
+=== CONFIGURATION DES VLAN SUR SWA ET FEDE
+
+== SWA1 , SWA2, FEDE1 & FEDE2 
+// renseignez les vlan existant
+
+en 
+conf t
+vlan 2
+name RH 
+vlan 3
+name MKT
+vlan 4
+name SALES 
+vlan 5
+name IT
+
+
+== CONFIGURATION DES TRUNK SUR SWA1 & SWA2
+//Configuration des trunk 
+
+interface range f0/1-4
+switchport mode trunk 
+
+
+== CONFIGURATION DES INTERFACES FASTETHERNET (Switch=>pc)SUR SWA1 &SWA2
+          METTRE LES PC DANS LES VLANS RESPECTIFS 
+
+interface f0/5
+switchport mode access 
+switchport access vlan 2
+interface f0/6
+switchport mode access 
+switchport access vlan 3
+interface f0/7
+switchport mode access 
+switchport access vlan 4
+interface f0/8
+switchport mode access 
+switchport access vlan 5
+
+
+=== CONFIGURATION DES ADRESSES DES FEDE
+
+== FEDE1
+
+interface g0/1
+no switchport  
+ip add 192.168.6.1 255.255.255.0
+no shut
+
+interface vlan 2
+ip add 192.168.2.1 255.255.255.0 
+no shut
+interface vlan 3
+ip add 192.168.3.1 255.255.255.0 
+no shut
+interface vlan 4
+ip add 192.168.4.1 255.255.255.0 
+no shut
+interface vlan 5
+ip add 192.168.5.1 255.255.255.0 
+no shut
+
+
+== FEDE2
+
+interface g0/1
+no switchport  
+ip add 192.168.7.1 255.255.255.0
+no shut
+
+interface vlan 2
+ip add 192.168.2.2 255.255.255.0 
+no shut
+interface vlan 3
+ip add 192.168.3.2 255.255.255.0 
+no shut
+interface vlan 4
+ip add 192.168.4.2 255.255.255.0 
+no shut
+interface vlan 5
+ip add 192.168.5.2 255.255.255.0 
+no shut
+
+
+=== ROUTAGE 
+
+== FEDE1
+
+ip routing 
+router rip 
+version 2
+no auto-summary
+network 192.168.6.0
+network 192.168.2.0
+network 192.168.3.0
+network 192.168.4.0
+network 192.168.5.0
+
+== FEDE2
+
+ip routing 
+router rip 
+version 2
+no auto-summary
+network 192.168.7.0
+network 192.168.2.0
+network 192.168.3.0
+network 192.168.4.0
+network 192.168.5.0
+
+== CORE 
+
+// dynamique
+
+router rip
+version 2
+no auto-summary
+network 192.168.8.0
+network 192.168.7.0
+network 192.168.6.0
+
+// statique
+ip route 0.0.0.0 0.0.0.0 s0/0/0
+
+== INTERNET
+
+ip route 192.168.0.0 255.255.0.0 s0/0/0
+ip route 172.16.0.0 255.255.0.0 g0/0
+
+== BRANCH 
+
+// statique
+
+ip route 0.0.0.0 0.0.0.0 g0/0
+
+//dynamique
+router rip 
+version 2
+no auto-summary
+network 172.16.1.0
+network 172.16.2.0
+
+
+== CORE
+
+router rip
+default-information originate 
+
+
+=== CONFIGURATION DES SPANNING SUR FEDE 
+         POUR EQUIIBRER LA CONNEXION
+
+== FEDE1
+
+spanning-tree vlan 1,2,3 root primary
+spanning-tree vlan 4,5 root secondary
+
+
+== FEDE2
+
+spanning-tree vlan 4,5 root primary
+spanning-tree vlan 1,2,3 root secondary
+
+
+=== CONFIGURATION DE HRSP : PACERLLES VIRTUELLES
+
+== FEDE1 (vlan 2,3 sont actifs et 4,5 passifs)
+
+interface vlan 2
+standby 2 ip 192.168.2.3
+standby 2 priority 150
+standby 2 preempt
+
+interface vlan 3
+standby 3 ip 192.168.3.3
+standby 3 priority 150
+standby 3 preempt
+
+interface vlan 4
+standby 4 ip 192.168.4.3
+
+interface vlan 5
+standby 5 ip 192.168.5.3
+
+
+== FEDE2 (vlan 4,5 sont actifs et 2,3 passifs)
+
+interface vlan 4
+standby 4 ip 192.168.4.3
+standby 4 priority 150
+standby 4 preempt
+
+interface vlan 5
+standby 5 ip 192.168.5.3
+standby 5 priority 150
+standby 5 preempt
+
+interface vlan 2
+standby 2 ip 192.168.2.3
+
+interface vlan 3
+standby 3 ip 192.168.3.3
+
+
+

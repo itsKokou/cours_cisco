@@ -1,0 +1,126 @@
+=======CONFIGURATION DE BASE==========
+enable
+conf t
+enable secret class
+line vty 0 15
+password cisco
+login
+line console 0
+password cisco
+login
+banner motd # 'Bienvenue' #
+
+============= R1 ===========
+hostname R1
+no ip domain-lookup
+interface s0/0/0
+ip add 10.1.1.1 255.255.255.252
+clock rate 64000
+no shut 
+interface f0/0
+ip add 192.168.10.1 255.255.255.0
+no shut
+interface f0/1
+ip add 192.168.11.1 255.255.255.0
+no shut
+
+------------Routage OSPF------------
+router ospf 1
+network 10.1.1.0 0.0.0.3 area 0
+network 192.168.10.0 0.0.0.255 area 0
+network 192.168.11.0 0.0.0.255 area 0
+
+------------ DHCP --------------
+ip dhcp excluded-address 192.168.10.1 192.168.10.10
+ip dhcp excluded-address 192.168.11.1 192.168.11.10
+
+ip dhcp pool R1Fa0
+network 192.168.10.0 255.255.255.0
+dns-server 192.168.11.5
+default-router 192.168.10.1
+
+ip dhcp pool R1Fa1
+network 192.168.11.0 255.255.255.0
+dns-server 192.168.11.5
+default-router 192.168.11.1
+
+show ip dhcp binding
+
+============= R2 ===========
+hostname R2
+no ip domain-lookup
+interface s0/0/0
+ip add 10.1.1.2 255.255.255.252
+clock rate 64000
+no shut 
+interface s0/0/1
+ip add 209.165.200.225 255.255.255.252
+clock rate 64000
+no shut
+interface f0/0
+ip add 192.168.20.1 255.255.255.0
+no shut
+
+------------Routage OSPF------------
+router ospf 1
+network 10.1.1.0 0.0.0.3 area 0
+network 192.168.20.0 0.0.0.255 area 0
+
+--------------
+ip route 0.0.0.0 0.0.0.0 209.165.200.226
+-----propagez la route avec ospf
+router ospf 1
+default-information originate
+
+---------- NAT STATIQUE--------
+ip nat inside source static 192.168.20.254 209.165.200.254
+
+interface serial 0/0/1
+ip nat outside
+interface fa0/0
+ip nat inside
+
+---------- NAT DYNAMIQUE --------
+--Créer pool
+ip nat pool MY-NAT-POOL 209.165.200.241 209.165.200.246 netmask  255.255.255.248
+
+--Créer acl pour les adresses à traduire
+ip access-list extended NAT
+permit ip 192.168.10.0 0.0.0.255 any
+permit ip 192.168.11.0 0.0.0.255 any
+
+-- Relier la acl au nat
+ip nat inside source list NAT pool MY-NAT-POOL 
+
+--Preciser les interfaces 
+interface serial 0/0/0
+ip nat inside
+
+------ Supprimer la NAT et son pool--
+no ip nat pool MY-NAT-POOL 209.165.200.241 209.165.200.246 netmask 255.255.255.248xa
+no ip nat inside source list NAT pool MY-NAT-POOL
+
+(en mode enable)
+clear ip nat translation *
+
+---------------- PAT -------------
+(on a déjà fait le acl NAT)
+ip nat inside source list NAT interface S0/0/1 overload
+
+============= FAI ===========
+hostname FAI
+no ip domain-lookup
+interface s0/0/1
+ip add 209.165.200.226 255.255.255.252
+clock rate 64000
+no shut 
+
+--------- routage ------------
+ip route 209.165.200.240 255.255.255.240 serial 0/0/1
+
+
+
+
+
+
+

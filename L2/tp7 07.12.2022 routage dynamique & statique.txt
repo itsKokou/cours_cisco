@@ -1,0 +1,125 @@
+==**CONFIGURATION DE BASE**==
+enable 
+conf t
+enable secret cisco
+line vty 0 15
+password class
+login 
+line console 0
+password cisco
+no login
+banner motd @ CLASSE : GLRS2 ISM @
+hostname R
+
+
+==**ADRESSAGE DES ELEMENTS**== 
+
+== HQ ==
+interface s0/0/0
+ip add 209.165.200.1 255.255.255.252
+no shut 
+interface g0/0
+ip add 192.168.6.1 255.255.255.0
+no shut 
+interface g0/1
+ip add 192.168.3.2 255.255.255.0
+no shut
+interface g0/2
+ip add 192.168.4.2 255.255.255.0
+no shut
+
+== R1 ==
+interface g0/0
+ip add 192.168.1.1 255.255.255.0
+no shut 
+interface g0/1
+ip add 192.168.5.1 255.255.255.0
+no shut
+interface g0/2
+ip add 192.168.3.1 255.255.255.0
+no shut
+
+== R2 ==
+interface g0/0
+ip add 192.168.2.1 255.255.255.0
+no shut 
+interface g0/1
+ip add 192.168.5.2 255.255.255.0
+no shut
+interface g0/2
+ip add 192.168.4.1 255.255.255.0
+no shut
+
+== BR ==
+interface s0/0/0
+ip add 209.165.200.2 255.255.255.252
+no shut 
+interface g0/0
+ip add 172.16.2.1 255.255.255.0
+no shut 
+interface g0/1
+ip add 172.16.1.1 255.255.255.0
+no shut
+
+== SW1 ==
+interface vlan 1
+ip add 192.168.1.2 255.255.255.0
+no shut 
+ip default-gateway 192.168.1.1
+
+== SW2 ==
+interface vlan 1
+ip add 192.168.2.2 255.255.255.0
+no shut 
+ip default-gateway 192.168.2.1
+
+== SW3 ==
+interface vlan 1
+ip add 172.16.1.2 255.255.255.0
+no shut 
+ip default-gateway 172.16.1.1
+
+== SW4 ==
+interface vlan 1
+ip add 172.16.2.2 255.255.255.0
+no shut 
+ip default-gateway 172.16.2.1
+
+
+
+==**ROUTAGE DYNAMIQUE ENTRE HQ, R1 et R2**== 
+
+== HQ ==
+router rip 
+version 2
+no auto-summary
+network 192.168.3.0
+network 192.168.4.0
+network 192.168.6.0
+
+== R1 ==
+router rip 
+version 2
+no auto-summary
+network 192.168.3.0
+network 192.168.5.0
+network 192.168.1.0
+
+== R2 ==
+router rip 
+version 2
+no auto-summary
+network 192.168.4.0
+network 192.168.5.0
+network 192.168.2.0
+
+
+==**ROUTAGE STATIQUE ENTRE HQ ET BR**== 
+
+== HQ ==
+ip route 172.16.1.0 255.255.255.0 S0/0/0
+IP ROUTE 172.16.2.0 255.255.255.0 S0/0/0
+
+
+== BR ==
+IP ROUTE 192.168.0.0 255.255.0.0 S0/0/0

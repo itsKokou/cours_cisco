@@ -1,0 +1,86 @@
+=======CONFIGURATION DE BASE==========
+enable
+conf t
+enable secret class
+line vty 0 15
+password cisco
+login
+line console 0
+password cisco
+login
+hostname 
+banner motd # ‘le message’ #
+=======CONFIGURATION DES INTERFACES========
+
+++++ DAKAR +++++
+interface s0/0/0
+ip add 192.168.0.1 255.255.255.252
+clock rate 64000
+no shutdown
+interface G0/0
+ip add 192.168.20.1 255.255.255.0
+no shutdown
+
++++++ LOME +++++
+interface s0/0/0
+ip add 192.168.0.2 255.255.255.252
+clock rate 64000
+no shutdown
+interface G0/0
+ip add 192.168.2.1 255.255.255.0
+no shutdown
+
+  --DHCP--
+ip dhcp excluded-address 192.168.2.1 192.168.2.10
+ip dhcp pool DHCP_POOL
+network 192.168.2.0 255.255.255.0
+default-router 192.168.2.1 
+dns-server 8.8.8.8
+
+===============Routage RIP=========
+
++++++ DAKAR +++++
+router rip
+version 2
+no auto-summary
+network 192.168.0.0
+network 192.168.20.0
+
++++++ LOME +++++
+router rip
+version 2
+no auto-summary
+network 192.168.0.0
+network 192.168.2.0
+
+===============Routage OSPF=========
+
++++++ DAKAR +++++
+router ospf 1
+network 192.168.0.0 0.0.0.3 area 0
+network 192.168.20.0 0.0.0.255 area 0
+
++++++ LOME +++++
+router ospf 1
+network 192.168.0.0 0.0.0.3 area 0
+network 192.168.2.0 0.0.0.255 area 0
+
+===============Routage EIGRP=========
+
++++++ DAKAR +++++
+router eigrp 1
+network 192.168.0.0 0.0.0.3
+network 192.168.20.0 0.0.0.255
+
++++++ LOME +++++
+router eigrp 1
+network 192.168.0.0 0.0.0.3
+network 192.168.2.0 0.0.0.255
+
+===============Routage STATIQUE=========
+
++++++ DAKAR +++++
+ip route 192.168.2.0 255.255.255.0 192.168.0.2
+
++++++ LOME +++++
+ip route 192.168.20.0 255.255.255.0 192.168.0.1

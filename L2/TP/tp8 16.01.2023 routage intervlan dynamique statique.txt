@@ -1,0 +1,190 @@
+==** CONFIGURATION DES ADRESSES **==
+
+== R2 ==
+en 
+conf t
+hostname R2
+interface G0/0
+ip add 192.168.4.1 255.255.255.0
+no shut 
+interface G0/1
+ip add 200.1.1.2 255.255.255.252
+no shut
+interface G0/2
+ip add 200.1.1.6 255.255.255.252
+no shut
+interface S0/0/0
+ip add 199.1.1.1 255.255.255.0
+no shut
+
+
+== R1 ==
+en 
+conf t
+hostname R1
+interface G0/1
+ip add 200.1.1.9 255.255.255.252
+no shut 
+interface G0/2
+ip add 200.1.1.1 255.255.255.252
+no shut 
+interface G0/0
+no ip add
+no shut
+
+
+== R3 ==
+en 
+conf t
+hostname R3
+interface G0/1
+ip add 200.1.1.10 255.255.255.252
+no shut 
+interface G0/2
+ip add 200.1.1.5 255.255.255.252
+no shut 
+interface G0/0
+no ip add
+no shut
+
+== INTERNET == 
+en 
+conf t
+hostname INTERNET 
+interface s0/0/0
+ip add 199.1.1.2 255.255.255.252
+no shut 
+interface G0/2
+ip add 199.1.1.5 255.255.255.252
+no shut 
+
+
+== BR ==
+en 
+conf t
+hostname BR
+interface G0/2
+ip add 199.1.1.6 255.255.255.252
+no shut 
+interface G0/0
+ip add 172.16.1.1 255.255.255.0
+no shut 
+interface G0/1
+ip add 172.16.2.1 255.255.255.0
+no shut 
+
+
+==** ROUTAGE INTERVLANS SW1 & SW2 **==
+
+== R1 ==
+interface G0/0.1
+encapsulation DOT1Q 1 
+ip add 192.168.1.1 255.255.255.0
+no shut 
+interface G0/0.2
+encapsulation DOT1Q 2 
+ip add 192.168.2.1 255.255.255.0
+no shut
+interface G0/0.3
+encapsulation DOT1Q 3 
+ip add 192.168.3.1 255.255.255.0
+no shut
+
+
+== R3 ==
+interface G0/0.1
+encapsulation DOT1Q 1 
+ip add 192.168.1.2 255.255.255.0
+no shut 
+interface G0/0.2
+encapsulation DOT1Q 2 
+ip add 192.168.2.2 255.255.255.0
+no shut
+interface G0/0.3
+encapsulation DOT1Q 3 
+ip add 192.168.3.2 255.255.255.0
+no shut
+
+
+== SW1 & SW2 ==
+en 
+conf t
+interface range G0/1-2
+switchport mode trunk
+interface F0/2
+switchport mode access 
+switchport access vlan 1
+interface F0/3
+switchport mode access 
+switchport access vlan 2
+interface F0/4
+switchport mode access 
+switchport access vlan 3
+hostname SW2 
+
+
+== ** ROUTAGE DYNAMIQUE R1,R2,R3 **==
+
+== R1 ==
+router rip 
+version 2
+no auto-summary
+network 200.1.1.0
+network 200.1.1.8
+network 192.168.1.0
+network 192.168.2.0
+network 192.168.3.0
+
+== R2 ==
+router rip 
+version 2
+no auto-summary
+network 200.1.1.0
+network 200.1.1.4
+network 192.168.4.0
+
+== R3 == 
+router rip
+version 2
+no auto-summary
+network 200.1.1.4
+network 200.1.1.8
+network 192.168.1.0
+network 192.168.2.0
+network 192.168.3.0
+
+
+
+== ** ROUTAGE STATIQUE R2, INTERNET , BR **==
+
+== R2 ==
+ip route 0.0.0.0 0.0.0.0 199.1.1.2
+
+== R1 ==
+ip route 172.16.1.0 255.255.255.0 200.1.1.2
+ip route 172.16.2.0 255.255.255.0 200.1.1.2
+
+== R3 ==
+ip route 172.16.1.0 255.255.255.0 200.1.1.6
+ip route 172.16.2.0 255.255.255.0 200.1.1.6
+
+== INTERNET ==
+ip route 192.168.4.0 255.255.255.0 199.1.1.1
+ip route 192.168.3.0 255.255.255.0 199.1.1.1
+ip route 192.168.2.0 255.255.255.0 199.1.1.1
+ip route 192.168.1.0 255.255.255.0 199.1.1.1
+ip route 200.1.1.0 255.255.255.252 199.1.1.1
+ip route 200.1.1.4 255.255.255.252 199.1.1.1
+ip route 200.1.1.8 255.255.255.252 199.1.1.1
+ip route 172.16.1.0 255.255.255.0 199.1.1.6
+ip route 172.16.2.0 255.255.255.0 199.1.1.6
+
+== BR ==
+ip route 0.0.0.0 0.0.0.0 199.1.1.5
+
+
+
+
+
+
+

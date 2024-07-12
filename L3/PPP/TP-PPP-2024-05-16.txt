@@ -1,0 +1,199 @@
+=======CONFIGURATION DE BASE==========
+enable
+conf t
+enable secret class
+line vty 0 15
+password cisco
+login
+line console 0
+logging synchronous
+password cisco
+login
+banner motd # 'Bienvenue' #
+
+
+============ R1 ===============
+hostname R1
+interface f0/1
+ip add 192.168.10.1 255.255.255.0
+no shut
+interface s0/0/0
+ip add 10.1.1.1 255.255.255.252
+clock rate 64000
+no shut 
+
+----------Routage OSPF -----
+router ospf 1
+network 192.168.10.0 0.0.0.255 area 0
+network 10.1.1.0 0.0.0.3 area 0
+
+---------- verifier Encapsulation HDLC ----
+show interface serial0/0/0
+
+--------- constater les effets de la configuration PPP --------
+debug ppp negotiation
+debug ppp packet
+
+--------- remplacement de HDLC par PPP (entre R1 et R2) --------
+interface serial 0/0/0
+encapsulation ppp
+
+------- Pour stop debug -------
+undebug all
+
+-------------vérifier activation encapsulation PPP --------
+show interface serial0/0/0
+
+------------- authentification PPP à l’aide du protocole PAP (R1-R2)
+username R1 password cisco
+int s0/0/0
+ppp authentication pap
+ppp pap sent-username R2 password cisco
+
+------------Voir config --------------
+sh run
+
+
+
+
+============ R2 ===============
+hostname R2
+interface loopback 0
+ip add 209.165.200.225 255.255.255.224
+no shut
+interface s0/0/0
+ip add 10.1.1.2 255.255.255.252
+clock rate 64000
+no shut
+interface s0/0/1
+ip add 10.2.2.1 255.255.255.252
+clock rate 64000
+no shut
+
+----------Routage OSPF -----
+router ospf 1
+network 10.1.1.0 0.0.0.3 area 0
+network 10.2.2.0 0.0.0.3 area 0
+network 209.165.200.224 0.0.0.31 area 0
+
+---------- verifier Encapsulation HDLC ----
+show interface serial0/0/0
+show interface serial0/0/1
+
+--------- constater les effets de la configuration PPP --------
+debug ppp negotiation
+debug ppp packet
+
+--------- remplacement de HDLC par PPP (entre R1 et R2) --------
+interface serial 0/0/0
+encapsulation ppp
+
+------- Pour stop debug -------
+undebug all
+
+--------- remplacement de HDLC par PPP (entre R2 et R3) --------
+interface serial 0/0/1
+encapsulation ppp
+
+-------------vérifier activation encapsulation PPP --------
+show interface serial0/0/0
+show interface serial0/0/1
+
+
+--------- rétablissement de l’encapsulation HDLC ------
+interface serial 0/0/0
+encapsulation hdlc
+interface serial 0/0/1
+encapsulation hdlc
+
+--------- rétablissement de l’encapsulation PPP ------
+interface serial 0/0/0
+encapsulation ppp
+interface serial 0/0/1
+encapsulation ppp
+
+------------- authentification PPP à l’aide du protocole PAP (R1-R2)
+username R2 password cisco
+interface Serial0/0/0
+ppp authentication pap
+ppp pap sent-username R1 password cisco
+
+------------ authentification PPP, via le protocole CHAP (R2-R3) ----
+username R3 password cisco
+int s0/0/1
+ppp authentication chap
+
+----------- examen du resultat de débogage (CHAP process)----------
+debug ppp authentication
+conf t
+int s0/0/1
+shutdown
+no shutdown
+
+-------- interrompre authentification PPP avec CHAP------
+int s0/0/1
+ppp authentication pap
+
+copy run start
+reload
+
+ --------- restaurer authentification PPP avec  CHAP------
+int s0/0/1
+ppp authentication chap
+
+------------Voir config --------------
+sh run
+
+
+
+
+============ R3 ===============
+hostname R3
+interface f0/1
+ip add 192.168.30.1 255.255.255.0
+no shut
+interface s0/0/1
+ip add 10.2.2.2 255.255.255.252
+clock rate 64000
+no shut 
+
+----------Routage OSPF -----
+router ospf 1
+network 10.2.2.0 0.0.0.3 area 0
+network 192.168.30.0 0.0.0.255 area 0
+
+---------- verifier Encapsulation HDLC ----
+show interface serial0/0/1
+
+--------- remplacement de HDLC par PPP (entre R2 et R3) --------
+interface serial 0/0/1
+encapsulation ppp
+
+-------------vérifier activation encapsulation PPP --------
+show interface serial0/0/1
+
+------------ authentification PPP, via le protocole CHAP (R2-R3) ----
+username R2 password cisco
+int s0/0/1
+ppp authentication chap
+
+----------- examen du resultat de débogage (CHAP process)----------
+debug ppp authentication
+
+----------interruption authentification PPP avec le protocole CHAP par le changement du mot de passe de R3 -----------
+
+username R2 password cisco
+copy run start 
+reload
+
+ -------- restauration authentification PPP avec par le changement pass de R3-------
+username R2 password cisco
+
+
+------------Voir config --------------
+sh run
+
+
+
+
+

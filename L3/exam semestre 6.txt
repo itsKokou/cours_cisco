@@ -1,0 +1,93 @@
+=======CONFIGURATION DE BASE==========
+enable
+conf t
+enable secret class
+line vty 0 15
+password cisco
+login
+line console 0
+logging synchronous
+password cisco
+login
+banner motd # 'Bienvenue' #
+no ip domain-lookup
+
+=================Routeur Godwin ======================
+hostname Godwin
+interface s1/0
+ip add 2.2.2.1 255.255.255.252
+no shutdown
+exit
+
+interface g2/0
+ip add 192.168.10.1 255.255.255.0
+no shutdown
+exit
+
+
+------------Routage OSPF------------
+router ospf 1
+network 2.2.2.0 0.0.0.3 area 0
+network 192.168.10.0 0.0.0.255 area 0
+exit
+
+------------------ PAT --------------------
+
+--Création ACL
+ip access-list extended NAT
+permit ip 192.168.10.0 0.0.0.255 any
+
+---- Les interfaces
+interface s1/0
+ip nat outside
+interface g2/0
+ip nat inside
+
+--- Lancer la pat
+ip nat inside source list NAT interface S1/0 overload
+
+
+
+
+=================Routeur TCHAKPANA ======================
+hostname TCHAKPANA
+
+interface s1/0
+ip add 2.2.2.2 255.255.255.252
+clock rate 128000
+no shutdown
+exit
+
+interface g2/0
+ip add 192.168.11.1 255.255.255.0
+no shutdown
+exit
+
+------------Routage OSPF------------
+router ospf 1
+network 2.2.2.0 0.0.0.3 area 0
+network 192.168.11.0 0.0.0.255 area 0
+exit
+
+--Création ACL
+ip access-list extended NAT
+permit ip 192.168.11.0 0.0.0.255 any
+
+---- Les interfaces
+interface s1/0
+ip nat outside
+interface g2/0
+ip nat inside
+
+--- Lancer la pat
+ip nat inside source list NAT interface S1/0 overload
+
+
+=============== PC 1 ================
+ip 192.168.10.10 255.255.255.0 192.168.10.1
+
+=============== PC 3=================
+ip 192.168.10.11 255.255.255.0 192.168.10.1
+
+=============== PC 2=================
+ip 192.168.11.2 255.255.255.0 192.168.11.1

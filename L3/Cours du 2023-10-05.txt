@@ -1,0 +1,14 @@
+OSPF : tous les routeurs ont besoin d'avoir une vue globale du réseau. ce qui fait qu'ils consomment assez de ressources. De ce fait, on decoupe le reseau en zone (Area).
+
+
+Protocole 
+- EGP : BGP 
+- IGP : - RIp, IS-IS  : Metrique: nbre de sauts
+        - EIGRP(propre à cisco), OSPF : Metrique: coût  :  
+
+
+Taf: créer une topo 
+ - OSPf
+ - RIP
+ - EIGRP
+ - Routage statique

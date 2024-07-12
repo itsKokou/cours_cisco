@@ -1,0 +1,52 @@
+================== R1 ======================
+
+------ Activer routage monodiffusion IPv6
+ ipv6 unicast-routing
+
+--------- Adressage
+interface g0/1
+ipv6 address 2001:DB8:ACAD:A::/64 eui-64
+no shutdown
+interface serial 0/0/1
+ipv6 address FC00::1/64
+no shutdown
+exit
+
+------------- routage statique ipv6 connectée ----------
+ipv6 route 2001:DB8:ACAD:B::/64 serial 0/0/1
+
+------------- routage statique ipv6 recursive ----------
+no ipv6 route 2001:DB8:ACAD:B::/64 serial 0/0/1
+ipv6 route 2001:DB8:ACAD:B::/64 FC00::2
+
+------------- routage statique ipv6 par defaut ----------
+no ipv6 route 2001:DB8:ACAD:B::/64 FC00::2
+ipv6 route ::/0 serial 0/0/1
+
+
+
+================== R3 ======================
+
+------ Activer routage monodiffusion IPv6
+ ipv6 unicast-routing
+
+--------- Adressage
+interface gigabit 0/1
+ipv6 address 2001:DB8:ACAD:B::/64 eui-64
+no shutdown
+interface serial 0/0/0
+ipv6 address FC00::2/64
+clock rate 128000
+no shutdown
+exit
+
+------------- routage statique ipv6 connectée ----------
+ ipv6 route 2001:DB8:ACAD:A::/64 serial 0/0/0
+
+------------- routage statique ipv6 recursive ----------
+no ipv6 route 2001:DB8:ACAD:A::/64 serial 0/0/0
+ipv6 route 2001:DB8:ACAD:A::/64 FC00::1
+
+
+
+

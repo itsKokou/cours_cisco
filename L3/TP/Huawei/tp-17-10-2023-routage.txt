@@ -1,0 +1,67 @@
+===== DAKR ======
+system-view 
+sysname DAKAR
+interface G0/0/0
+ip add 192.168.20.1 255.255.255.0
+inter S0/0/0
+ip add 192.168.0.1 255.255.255.252
+
+======= LOME ======
+system-view 
+sysname LOME
+interface G0/0/0
+ip add 192.168.2.1 255.255.255.
+inter S0/0/0
+ip add 192.168.0.2 255.255.255.252
+
+ --DHCP--
+ip pool KOKOU
+network @add_res @mask
+lease day 3 hour 15
+gateway-list @add_router
+dns-list 8.8.8.8
+quit 
+dhcp enable
+interface G0/0/0
+dhcp select global 
+quit
+save
+
+
+====== STATIQUE ======
+
++++++ DAKAR +++++
+ip route-static 192.168.2.0 24 192.168.0.2
+
++++++ LOME +++++
+ip route-static 192.168.20.0 24 192.168.0.1
+
+====== RIP ======
+
++++++ DAKAR +++++
+rip
+version 2
+network 192.168.0.0
+network 192.168.20.0
+
++++++ LOME +++++
+rip
+version 2
+network 192.168.0.0
+network 192.168.2.0
+
+====== OSPF ======
+
++++++ DAKAR +++++
+ospf 
+area 0
+network 192.168.0.0 0.0.0.3
+network 192.168.20.0 0.0.0.255
+
++++++ LOME +++++
+ospf 
+area 0
+network 192.168.0.0 0.0.0.3
+network 192.168.2.0 0.0.0.255
+
+

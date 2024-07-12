@@ -1,0 +1,3 @@
+https://www.formip.com/pages/blog/ndp-slaac-et-dhcpv6
+
+https://cisco.goffinet.org/ccna/services-infrastructure/gestion-adresses-ipv6-autoconfiguration-dhcpv6/

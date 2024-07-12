@@ -1,0 +1,13 @@
+Distance Administrative == préference (Huawei )
+
+#La route en backup est une route secondaire pour les paquets. lorsque la principale est off, ils prennent celle-ci.
+
+ip route @add @mask @saut (preference) valeur(DA/preference)
+
+Si valeur <  DA ou pref alors la route est prise par defaut 
+Si valeur > DA ou pref alors la route est mise en backup
+
+#display current-configuration : voir la config
+s
+
+

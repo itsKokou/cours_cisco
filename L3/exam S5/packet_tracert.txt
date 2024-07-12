@@ -1,0 +1,47 @@
+==================ADRESSAGE=============
+
+========Exam1
+en 
+conf t
+hostname Exam1
+int s3/3
+ip add 192.168.10.5 255.255.255.252
+no shut 
+int g2/0
+ip add 192.168.3.1 255.255.255.0
+no shut
+
+
+========Exam2
+en 
+conf t
+hostname Exam2
+int s3/3
+ip add 192.168.10.6 255.255.255.252
+no shut 
+int g2/0
+ip add 192.168.1.1 255.255.255.0
+no shut
+int g4/0
+ip add 192.168.2.1 255.255.255.0
+no shut
+
+
+==================ROUTAGE OSPF=============
+
+========Exam1
+router ospf 1
+network 192.168.3.0 0.0.0.255 area 0
+network 192.168.10.4 0.0.0.3 area 0
+
+========Exam2
+router ospf 1
+network 192.168.1.0 0.0.0.255 area 0
+network 192.168.2.0 0.0.0.255 area 0
+network 192.168.10.4 0.0.0.3 area 0
+
+-------backup
+ip route 192.168.3.0 255.255.255.0 192.168.10.5 120
+
+
+
